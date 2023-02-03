@@ -39,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
 
               // welcome back, you've been missed!
               Text(
-                'Welcome back!',
+                AppStrings.welcome,
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 16,
@@ -51,7 +51,7 @@ class _LoginViewState extends State<LoginView> {
               // username textfield
               MyTextField(
                 controller: usernameController,
-                hintText: 'Username',
+                hintText: AppStrings.username,
                 obscureText: false,
               ),
 
@@ -60,7 +60,7 @@ class _LoginViewState extends State<LoginView> {
               // password textfield
               MyTextField(
                 controller: passwordController,
-                hintText: 'Password',
+                hintText: AppStrings.password,
                 obscureText: true,
               ),
 
@@ -73,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'Forgot Password?',
+                      AppStrings.forgetPassword,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                   ],
@@ -159,12 +159,12 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Not a member?',
+                    AppStrings.registerText1,
                     style: TextStyle(color: Colors.grey[700]),
                   ),
                   const SizedBox(width: 4),
                   const Text(
-                    'Register now',
+                    AppStrings.registerText2,
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
