@@ -13,8 +13,6 @@ ThemeData getApplicationTheme() {
       disabledColor: ColorManager.grey1,
       // ripple color
       splashColor: ColorManager.primaryOpacity70,
-      // will be used incase of disabled button for example
-      accentColor: ColorManager.grey,
       // card view theme
       cardTheme: CardTheme(
           color: ColorManager.white,
@@ -85,5 +83,5 @@ ThemeData getApplicationTheme() {
             borderSide:
                 BorderSide(color: ColorManager.primary, width: AppSize.s1_5),
             borderRadius: BorderRadius.all(Radius.circular(AppSize.s8))),
-      ));
+      ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: ColorManager.grey));
 }

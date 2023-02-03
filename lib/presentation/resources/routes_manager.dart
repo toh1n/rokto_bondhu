@@ -5,7 +5,6 @@ import 'package:complete_advanced_flutter/presentation/onboarding/onboarding.dar
 import 'package:complete_advanced_flutter/presentation/register/register.dart';
 import 'package:complete_advanced_flutter/presentation/resources/strings_manager.dart';
 import 'package:complete_advanced_flutter/presentation/splash/splash.dart';
-import 'package:complete_advanced_flutter/presentation/store_details/store_details.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
@@ -15,7 +14,6 @@ class Routes {
   static const String registerRoute = "/register";
   static const String forgotPasswordRoute = "/forgotPassword";
   static const String mainRoute = "/main";
-  static const String storeDetailsRoute = "/storeDetails";
 }
 
 class RouteGenerator {
@@ -33,8 +31,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ForgotPasswordView());
       case Routes.mainRoute:
         return MaterialPageRoute(builder: (_) => MainView());
-      case Routes.storeDetailsRoute:
-        return MaterialPageRoute(builder: (_) => StoreDetailsView());
       default:
         return unDefinedRoute();
     }
