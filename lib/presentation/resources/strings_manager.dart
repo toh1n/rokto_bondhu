@@ -4,10 +4,10 @@ class AppStrings {
   static const String onBoardingSubTittle1 = "Be the reason for someone's heartbeat.";
   static const String onBoardingSubTittle2 = "A single drop of blood can make a difference.";
   static const String getStarted = "Get Started";
-  static const String home = "Get Started";
-  static const String chat = "Get Started";
-  static const String notifications = "Get Started";
-  static const String settings = "Get Started";
+  static const String home = "Home";
+  static const String chat = "Chat";
+  static const String notifications = "Notifications";
+  static const String settings = "Settings";
   static const String login = "Login";
   static const String username = "Username";
   static const String mobileNumber = "Mobile Number";

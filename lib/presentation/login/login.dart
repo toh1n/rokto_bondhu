@@ -32,7 +32,17 @@ class _LoginViewState extends State<LoginView> {
             children: [
               // const SizedBox(height: 50),
               // // logo
-              SquareTile(imagePath: ImageAssets.splashLogo,
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.grey[200],
+                ),
+                child: Image.asset(
+                  ImageAssets.splashLogo,
+                  height: 100,
+                ),
               ),
 
               const SizedBox(height: 50),
@@ -163,11 +173,16 @@ class _LoginViewState extends State<LoginView> {
                     style: TextStyle(color: Colors.grey[700]),
                   ),
                   const SizedBox(width: 4),
-                  const Text(
-                    AppStrings.registerText2,
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, Routes.registerRoute);
+                    },
+                    child: const Text(
+                      AppStrings.registerText2,
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
