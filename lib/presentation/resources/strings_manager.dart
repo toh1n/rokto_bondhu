@@ -10,6 +10,7 @@ class AppStrings {
   static const String settings = "Settings";
   static const String login = "Login";
   static const String username = "Username";
+  static const String enter = "Enter";
   static const String mobileNumber = "Mobile Number";
   static const String usernameError = "Username is wrong";
   static const String passwordError = "password is wrong";

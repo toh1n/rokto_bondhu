@@ -79,14 +79,19 @@ class _LoginViewState extends State<LoginView> {
               // forgot password?
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      AppStrings.forgetPassword,
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ],
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pushNamed(context, Routes.forgotPasswordRoute);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        AppStrings.forgetPassword,
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
