@@ -1,5 +1,7 @@
+import 'package:complete_advanced_flutter/presentation/login/auth.dart';
 import 'package:complete_advanced_flutter/presentation/resources/routes_manager.dart';
 import 'package:complete_advanced_flutter/presentation/resources/theme_manager.dart';
+import 'package:complete_advanced_flutter/presentation/splash/splash.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatefulWidget {
@@ -19,9 +21,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: Routes.splashRoute,
-      theme: getApplicationTheme(),
+      home: Auth(),
     );
   }
 }

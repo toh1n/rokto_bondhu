@@ -19,8 +19,8 @@ class _SplashViewState extends State<SplashView> {
     _timer = Timer(Duration(seconds: 2), _goNext);
   }
 
-  _goNext() {
-    Navigator.pushReplacementNamed(context, Routes.onBoardingRoute);
+  _goNext() async {
+    Navigator.pushReplacementNamed(context, Routes.authRoute);
   }
 
   @override

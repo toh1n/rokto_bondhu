@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../resources/color_manager.dart';
 import '../resources/strings_manager.dart';
@@ -31,14 +32,25 @@ class _MainViewState extends State<MainView> {
   var _title = AppStrings.home;
   var _currentIndex = 0;
 
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 185, 58, 58),
         title: Text(
           _title,
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: Theme.of(context).textTheme.headline2,
         ),
+        actions: [
+          IconButton(
+            onPressed: signUserOut,
+            icon: Icon(Icons.logout),
+          )
+        ],
       ),
       body: pages[_currentIndex],
       bottomNavigationBar: Container(
@@ -82,4 +94,3 @@ class _MainViewState extends State<MainView> {
     });
   }
 }
-

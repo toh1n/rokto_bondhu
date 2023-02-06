@@ -14,8 +14,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-
-
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
@@ -88,7 +86,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                 // sign in button
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.pushNamed(context, Routes.mainRoute);
                   },
                   child: Container(
@@ -110,7 +108,6 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                   ),
                 ),
-
 
                 const SizedBox(height: 50),
 

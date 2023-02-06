@@ -2,10 +2,10 @@ import 'package:complete_advanced_flutter/presentation/resources/assets_manager.
 import 'package:complete_advanced_flutter/presentation/resources/color_manager.dart';
 import 'package:complete_advanced_flutter/presentation/resources/routes_manager.dart';
 import 'package:complete_advanced_flutter/presentation/resources/strings_manager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'components/my_button.dart';
 import 'components/my_textfield.dart';
 import 'components/square_tile.dart';
 
@@ -17,16 +17,92 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  void signUserIn() async {
+    // show loading circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // try sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      // pop the loading circle
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      // pop the loading circle
+      Navigator.pop(context);
+      // WRONG EMAIL
+      if (e.code == 'user-not-found') {
+        // show error to user
+        wrongEmailMessage();
+      }
+
+      // WRONG PASSWORD
+      else if (e.code == 'wrong-password') {
+        // show error to user
+        wrongPasswordMessage();
+      }
+    }
+  }
+
+  // void signIn() async {
+  //   await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: emailController.text, password: passwordController.text);
+  // }
+
+  // wrong email message popup
+  void wrongEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Center(
+            child: Text(
+              'Incorrect Email or Password',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // wrong password message popup
+  void wrongPasswordMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Center(
+            child: Text(
+              'Incorrect Email or Password',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: Center(
+      body: Center(
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -60,7 +136,7 @@ class _LoginViewState extends State<LoginView> {
 
               // username textfield
               MyTextField(
-                controller: usernameController,
+                controller: emailController,
                 hintText: AppStrings.username,
                 obscureText: false,
               ),
@@ -79,93 +155,42 @@ class _LoginViewState extends State<LoginView> {
               // forgot password?
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.pushNamed(context, Routes.forgotPasswordRoute);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        AppStrings.forgetPassword,
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      AppStrings.forgetPassword,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(height: 25),
 
-            GestureDetector(
-              onTap: (){
-                Navigator.pushNamed(context, Routes.mainRoute);
-              },
-              child: Container(
-                padding: const EdgeInsets.all(25),
-                margin: const EdgeInsets.symmetric(horizontal: 25),
-                decoration: BoxDecoration(
-                  color: ColorManager.red,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(
-                  child: Text(
-                    AppStrings.login,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+              GestureDetector(
+                onTap: signUserIn,
+                child: Container(
+                  padding: const EdgeInsets.all(25),
+                  margin: const EdgeInsets.symmetric(horizontal: 25),
+                  decoration: BoxDecoration(
+                    color: ColorManager.red,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      AppStrings.login,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
               const SizedBox(height: 50),
-
-              // // or continue with
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              //   child: Row(
-              //     children: [
-              //       Expanded(
-              //         child: Divider(
-              //           thickness: 0.5,
-              //           color: Colors.grey[400],
-              //         ),
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              //         child: Text(
-              //           'Or continue with',
-              //           style: TextStyle(color: Colors.grey[700]),
-              //         ),
-              //       ),
-              //       Expanded(
-              //         child: Divider(
-              //           thickness: 0.5,
-              //           color: Colors.grey[400],
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              //
-              // const SizedBox(height: 50),
-              //
-              // // google + apple sign in buttons
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: const [
-              //     // google button
-              //     SquareTile(imagePath: 'lib/images/google.png'),
-              //
-              //     SizedBox(width: 25),
-              //
-              //     // apple button
-              //     SquareTile(imagePath: 'lib/images/apple.png')
-              //   ],
-              // ),
 
               const SizedBox(height: 50),
 
@@ -179,7 +204,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(width: 4),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(context, Routes.registerRoute);
                     },
                     child: const Text(
@@ -198,5 +223,4 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-
 }

@@ -21,76 +21,76 @@ class _OnBoardingViewState extends State<OnBoardingView> {
       backgroundColor: ColorManager.primary,
       body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-             children: [
-               Column(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-                   SizedBox(
-                     height: AppSize.s65,
-                   ),
-                   SizedBox(
-                     height: AppSize.s65,
-                   ),
-                   SizedBox(
-                     height: AppSize.s65,
-                   ),
-                   SvgPicture.asset(ImageAssets.onboardingLogo),
-                   SizedBox(
-                     height: AppSize.s65,
-                   ),
-                   Padding(
-                     padding: EdgeInsets.all(AppPadding.p8),
-                     child: Text(
-                       AppStrings.onBoardingTittle1,
-                       textAlign: TextAlign.center,
-                       style: Theme.of(context).textTheme.headline1,
-                     ),
-                   ),
-                   Padding(
-                     padding: EdgeInsets.all(AppPadding.p8),
-                     child: Column(children: [
-                       Text(
-                         AppStrings.onBoardingSubTittle1,
-                         textAlign: TextAlign.center,
-                         style: Theme.of(context).textTheme.subtitle1,
-                       ),
-                       Text(
-                         AppStrings.onBoardingSubTittle2,
-                         textAlign: TextAlign.center,
-                         style: Theme.of(context).textTheme.subtitle1,
-                       ),
-                     ]),
-                   ),
-                 ],
-               ),
-               Column(
-                 children: [
-                   GestureDetector(
-                   onTap: () {
-                     Navigator.pushReplacementNamed(context, Routes.loginRoute);
-                   },
-      child: Container(
-        padding: const EdgeInsets.all(25),
-        margin: const EdgeInsets.symmetric(horizontal: 25),
-        decoration: BoxDecoration(
-          color: ColorManager.red,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
-          child: Text(
-            AppStrings.getStarted,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: AppSize.s65,
+              ),
+              SizedBox(
+                height: AppSize.s65,
+              ),
+              SizedBox(
+                height: AppSize.s65,
+              ),
+              SvgPicture.asset(ImageAssets.onboardingLogo),
+              SizedBox(
+                height: AppSize.s65,
+              ),
+              Padding(
+                padding: EdgeInsets.all(AppPadding.p8),
+                child: Text(
+                  AppStrings.onBoardingTittle1,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline1,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(AppPadding.p8),
+                child: Column(children: [
+                  Text(
+                    AppStrings.onBoardingSubTittle1,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Text(
+                    AppStrings.onBoardingSubTittle2,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ]),
+              ),
+            ],
           ),
-        ),
-      ),
-    )
-                 ],
-               ),
+          Column(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, Routes.authRoute);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(25),
+                  margin: const EdgeInsets.symmetric(horizontal: 25),
+                  decoration: BoxDecoration(
+                    color: ColorManager.red,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      AppStrings.getStarted,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
         ],
       )),
     );
