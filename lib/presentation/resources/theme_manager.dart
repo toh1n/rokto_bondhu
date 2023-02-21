@@ -37,7 +37,7 @@ ThemeData getApplicationTheme() {
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
               textStyle: getRegularStyle(color: ColorManager.white),
-              primary: ColorManager.primary,
+              backgroundColor: ColorManager.primary,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSize.s12)))),
 
@@ -83,5 +83,7 @@ ThemeData getApplicationTheme() {
             borderSide:
                 BorderSide(color: ColorManager.primary, width: AppSize.s1_5),
             borderRadius: BorderRadius.all(Radius.circular(AppSize.s8))),
-      ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: ColorManager.grey));
+      ),
+      colorScheme:
+          ColorScheme.fromSwatch().copyWith(secondary: ColorManager.grey));
 }

@@ -2,7 +2,6 @@ import 'package:complete_advanced_flutter/presentation/forgot_password/forgot_pa
 import 'package:complete_advanced_flutter/presentation/login/auth.dart';
 import 'package:complete_advanced_flutter/presentation/login/login.dart';
 import 'package:complete_advanced_flutter/presentation/main/main_view.dart';
-import 'package:complete_advanced_flutter/presentation/onboarding/onboarding.dart';
 import 'package:complete_advanced_flutter/presentation/register/register.dart';
 import 'package:complete_advanced_flutter/presentation/resources/strings_manager.dart';
 import 'package:complete_advanced_flutter/presentation/splash/splash.dart';
@@ -25,8 +24,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SplashView());
       case Routes.loginRoute:
         return MaterialPageRoute(builder: (_) => LoginView());
-      case Routes.onBoardingRoute:
-        return MaterialPageRoute(builder: (_) => OnBoardingView());
       case Routes.registerRoute:
         return MaterialPageRoute(builder: (_) => RegisterView());
       case Routes.forgotPasswordRoute:
