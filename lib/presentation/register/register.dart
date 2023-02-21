@@ -9,7 +9,6 @@ import '../../model/donor.dart';
 import '../resources/components/my_textfield.dart';
 import '../resources/assets_manager.dart';
 import '../resources/color_manager.dart';
-import '../resources/routes_manager.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -410,7 +409,7 @@ class _RegisterViewState extends State<RegisterView> {
     {
       await _auth.createUserWithEmailAndPassword(email: email, password: password).then((value) => {
         postDetailsToFireStore()
-      }).catchError((e){
+      }).catchError((e) {
         Fluttertoast.showToast(msg: e!.message);
       });
     }
@@ -441,7 +440,7 @@ class _RegisterViewState extends State<RegisterView> {
     await _auth.currentUser?.sendEmailVerification();
 
 
-    Navigator.pushAndRemoveUntil(context as BuildContext, MaterialPageRoute(builder: (context) => EmailVerify()), (route) => false);
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => EmailVerify()), (route) => false);
 
   }
 }

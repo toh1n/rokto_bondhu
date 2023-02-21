@@ -32,9 +32,7 @@ class _MainViewState extends State<MainView> {
   var _title = AppStrings.home;
   var _currentIndex = 0;
 
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +41,9 @@ class _MainViewState extends State<MainView> {
         backgroundColor: Color.fromARGB(255, 185, 58, 58),
         title: Text(
           _title,
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
-        actions: [
-          IconButton(
-            onPressed: signUserOut,
-            icon: Icon(Icons.logout),
-          )
-        ],
+        centerTitle: true,
       ),
       body: pages[_currentIndex],
       bottomNavigationBar: Container(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../resources/color_manager.dart';
@@ -10,6 +11,13 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -18,20 +26,48 @@ class _SettingsPageState extends State<SettingsPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Padding(padding: EdgeInsets.all(10)),
-            CircleAvatar(
-              child: Icon(Icons.access_alarm_rounded),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Stack(
+                children: [
+                  Container(
+                      height: 120.0,
+                      width: 100.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 185, 58, 58),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text("bloodGroup",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          )
+                        ],
+                      )),
+                ],
+              ),
             ),
             Padding(padding: EdgeInsets.all(10)),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Name"),
-                Text("Blood Group"),
-                Text("Gender"),
-                Text("Age"),
-                Text("Location"),
+
+                Text(user.email.toString()),
+                Text(user.uid.toString()),
+                Text(user.email.toString()),
+                Text(user.email.toString()),
+                Text(user.email.toString()),
               ],
             )
           ],
@@ -59,7 +95,9 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            signUserOut();
+          },
           child: Container(
             padding: const EdgeInsets.all(25),
             margin: const EdgeInsets.symmetric(horizontal: 25),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:complete_advanced_flutter/presentation/login/login.dart';
 import 'package:complete_advanced_flutter/presentation/main/main_view.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +23,15 @@ class _EmailVerifyState extends State<EmailVerify> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-                "We have sent a verification mail to your email.Please verify your email."
+                "We have sent a verification mail to your email. Please verify your email.",
+              style: TextStyle(
+                color: Colors.grey[700],
+                fontSize: 16,
+              ),
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoginView()));
+                exit(0);
               },
               child: Container(
                 padding: const EdgeInsets.all(25),
