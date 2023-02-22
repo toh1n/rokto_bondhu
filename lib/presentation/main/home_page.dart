@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,30 +16,36 @@ class _HomePageState extends State<HomePage> {
   final bloodGroupController = TextEditingController();
   final areaController = TextEditingController();
   final donorRef = FirebaseFirestore.instance.collection('donors');
-  var stream;
 
-
-  bool filter = true;
+  bool onlyArea = false;
+  bool onlyBloodGroup = false;
 
 
   @override
   Widget build(BuildContext context) {
+    final filter;
+    final specificAreaOnly = FirebaseFirestore.instance.collection('donors').where("area", isEqualTo: areaController.text).snapshots();
+    final specificBloodGroup = FirebaseFirestore.instance.collection('donors').where("bloodGroup", isEqualTo: bloodGroupController.text).snapshots();
+    final specificBloodGroupAndArea = donorRef.where('bloodGroup', isEqualTo: bloodGroupController.text).where('area', isEqualTo: areaController.text).snapshots();
+    final all = FirebaseFirestore.instance.collection('donors').where("bloodGroup", isGreaterThan: "").snapshots();
 
+    if(!onlyArea && onlyBloodGroup)
+      {
+         filter = specificBloodGroup;
+      }
+    else if(onlyArea && !onlyBloodGroup)
+      {
+        filter = specificAreaOnly;
+      }
+    else if(onlyArea && onlyBloodGroup)
+      {
+        filter = specificBloodGroupAndArea;
+      }
+    else
+      {
+        filter = all;
+      }
 
-    //  filterControlloer()
-    // {
-    //   final specificAreaOnly = FirebaseFirestore.instance.collection('donors').where("area", isEqualTo: areaController.text).snapshots();
-    //   final specificBloodGroup = FirebaseFirestore.instance.collection('donors').where("bloodGroup", isEqualTo: bloodGroupController.text).snapshots();
-    //   final specificBloodGroupAndArea = donorRef.where('bloodGroup', isEqualTo: bloodGroupController.text).where('area', isEqualTo: areaController.text).snapshots();
-    //   final all = FirebaseFirestore.instance.collection('donors').where("bloodGroup", isGreaterThan: "").snapshots();
-    //   // if(filter)
-    //   //   {
-    //   //     stream = specificAreaOnly;
-    //   //     return stream;
-    //   //   }
-    //   stream = all;
-    //   return stream;
-    // }
 
     return ListView(
       children: [
@@ -58,12 +62,11 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       if(val == "All")
                         {
-                          filter = true;
+                          onlyBloodGroup = false;
                         }
                       else{
-                        filter = false;
+                        onlyBloodGroup = true;
                       }
-                      filter = false;
                       bloodGroupController.text = val!;
                     });
                   },
@@ -72,9 +75,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10.0),
                   )),
                   onTap: () {
-                    setState(() {
-                      bloodGroupController.clear();
-                    });
+                    setState(() {});
                   },
                   hint: Text("Blood Group : All"),
                   items: [
@@ -127,18 +128,16 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       if(val == "All")
                       {
-                        filter = true;
+                        onlyArea = false;
                       }
                       else{
-                        filter = false;
+                        onlyArea = true;
                       }
                       areaController.text = val!;
                     });
                   },
                   onTap: () {
-                    setState(() {
-                      areaController.clear();
-                    });
+                    setState(() {});
                   },
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -170,11 +169,13 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(
           child: StreamBuilder(
-            // stream: stream,
-            stream: filter ? donorRef.where("bloodGroup", isGreaterThan: "").snapshots()
-                : donorRef.where('bloodGroup', isEqualTo: bloodGroupController.text)
-                .where('area', isEqualTo: areaController.text)
-                .snapshots(),
+
+            stream: filter,
+
+            // stream: filter ? donorRef.where("bloodGroup", isGreaterThan: "").snapshots()
+            //     : donorRef.where('bloodGroup', isEqualTo: bloodGroupController.text)
+            //     .where('area', isEqualTo: areaController.text)
+            //     .snapshots(),
             builder: (context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
                 return circularLoading();
@@ -237,119 +238,132 @@ class ShowDonors extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2.0,
+      elevation: 1.0,
       child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50.0)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(0),
+          color: Colors.grey[200],
+        ),
         padding: EdgeInsets.only(bottom: 10.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Stack(
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                      height: 120.0,
-                      width: 100.0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 185, 58, 58),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(bloodGroup,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 40.0,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          )
-                        ],
-                      )),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      displayName,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                          fontFamily: "Gotham",
-                          fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Stack(
+                      children: [
+                        Container(
+                            height: 120.0,
+                            width: 100.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 185, 58, 58),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Text(bloodGroup,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 40.0,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                )
+                              ],
+                            )),
+                      ],
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_city,
-                              color: Colors.redAccent,
-                            ),
-                            Text(
-                              "$area",
-                              style: TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Gotham",
-                                  fontSize: 18.0),
-                            ),
-                          ],
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.0),
+                          child: Text(
+                            displayName,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontFamily: "Gotham",
+                                fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        SizedBox(
-                          height: 8.0,
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_city,
+                                    color: Colors.redAccent,
+                                  ),
+                                  Text(
+                                    "$area",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Gotham",
+                                        fontSize: 18.0),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Container(
 
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      _makePhoneCall(phoneNumber);
-                    },
-                    child: Icon(
-                      Icons.phone,
-                      color: Color.fromARGB(255, 185, 58, 58),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      _sendSMS(phoneNumber);
-                    },
-                    child: Icon(
-                      Icons.sms,
-                      color: Color.fromARGB(255, 185, 58, 58),
-                    ),
-                  ),
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _makePhoneCall(phoneNumber);
+                      },
+                      child: Icon(
+                        Icons.phone,
+                        color: Color.fromARGB(255, 185, 58, 58),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(5)),
+                    InkWell(
+                      onTap: () {
+                        _sendSMS(phoneNumber);
+                      },
+                      child: Icon(
+                        Icons.sms,
+                        color: Color.fromARGB(255, 185, 58, 58),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+
+            ],
+          ),
         ),
       ),
     );

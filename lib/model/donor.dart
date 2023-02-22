@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class DonorModel {
   String? uid;
   String? displayName;
@@ -12,9 +10,17 @@ class DonorModel {
   String? area;
   String? email;
 
-
-  DonorModel({this.uid, this.email, this.displayName, this.photoUrl, this.city, this.area, this.bloodGroup, this.phoneNumber, this.gender, this.dateOfBirth});
-
+  DonorModel(
+      {this.uid,
+      this.email,
+      this.displayName,
+      this.photoUrl,
+      this.city,
+      this.area,
+      this.bloodGroup,
+      this.phoneNumber,
+      this.gender,
+      this.dateOfBirth});
 
   //receive data from server
   // factory DonorModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
@@ -35,19 +41,18 @@ class DonorModel {
   // }
 
 // send data to server
-  Map<String, dynamic> toMap(){
-    return{
-      'email' : email,
+  Map<String, dynamic> toMap() {
+    return {
+      'email': email,
       'id': uid,
       'displayName': displayName,
       'photoUrl': photoUrl,
       'city': city,
-      'area' : area,
+      'area': area,
       'bloodGroup': bloodGroup,
       'phoneNumber': phoneNumber,
       'gender': gender,
       'dateOfBirth': dateOfBirth,
     };
   }
-
 }

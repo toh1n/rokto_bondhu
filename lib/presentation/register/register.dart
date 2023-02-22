@@ -18,8 +18,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-
-
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
 
@@ -32,8 +30,24 @@ class _RegisterViewState extends State<RegisterView> {
   final confirmPasswordController = TextEditingController();
   final genderController = TextEditingController();
   final bloodGroupController = TextEditingController();
-  final dateOfBirth = TextEditingController();
+  final dobController = TextEditingController();
+  int year = 0;
 
+  pickDate() async {
+    DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(DateTime.now().year-60),
+      lastDate: DateTime.now(),
+    );
+
+    if(date !=null){
+      setState(() {
+        year = date.year.toInt();
+        dobController.text = date.year.toString() +"-"+ date.month.toString() +"-"+date.day.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +87,12 @@ class _RegisterViewState extends State<RegisterView> {
 
                 // displayName
                 MyTextField(
-                  validator: (value){
+                  validator: (value) {
                     RegExp regex = RegExp(r'^.{3,}$');
-                    if(value!.isEmpty)
-                    {
+                    if (value!.isEmpty) {
                       return ("Name can not be empty");
                     }
-                    if(!regex.hasMatch(value))
-                    {
+                    if (!regex.hasMatch(value)) {
                       return ("Please Enter a valid name.");
                     }
                   },
@@ -88,8 +100,8 @@ class _RegisterViewState extends State<RegisterView> {
                   obscureText: false,
                   hintText: 'Name',
                   keyboardType: TextInputType.name,
-                  onSaved: (value){
-                    displayNameController.text=value!;
+                  onSaved: (value) {
+                    displayNameController.text = value!;
                   },
                 ),
 
@@ -123,16 +135,15 @@ class _RegisterViewState extends State<RegisterView> {
                     children: [
                       Flexible(
                         child: DropdownButtonFormField(
-                          validator: (value) => value == null
-                              ? 'Select Blood Group'
-                              : null,
+                          validator: (value) =>
+                              value == null ? 'Select Blood Group' : null,
                           onChanged: (String? val) {
                             bloodGroupController.text = val!;
                           },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              )),
+                            borderRadius: BorderRadius.circular(10.0),
+                          )),
                           hint: Text("Blood Group"),
                           items: [
                             DropdownMenuItem(
@@ -175,16 +186,15 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                       Flexible(
                         child: DropdownButtonFormField(
-                          validator: (value) => value == null
-                              ? 'Select Gender'
-                              : null,
+                          validator: (value) =>
+                              value == null ? 'Select Gender' : null,
                           onChanged: (String? val) {
                             genderController.text = val!;
                           },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              )),
+                            borderRadius: BorderRadius.circular(10.0),
+                          )),
                           hint: Text("Gender"),
                           items: [
                             DropdownMenuItem(
@@ -214,16 +224,15 @@ class _RegisterViewState extends State<RegisterView> {
                     children: [
                       Flexible(
                         child: DropdownButtonFormField(
-                          validator: (value) => value == null
-                              ? 'Select City'
-                              : null,
+                          validator: (value) =>
+                              value == null ? 'Select City' : null,
                           onChanged: (String? val) {
                             cityController.text = val!;
                           },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              )),
+                            borderRadius: BorderRadius.circular(10.0),
+                          )),
                           hint: Text("City"),
                           items: [
                             DropdownMenuItem(
@@ -238,16 +247,15 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                       Flexible(
                         child: DropdownButtonFormField(
-                          validator: (value) => value == null
-                              ? 'Select area'
-                              : null,
+                          validator: (value) =>
+                              value == null ? 'Select area' : null,
                           onChanged: (String? val) {
                             areaController.text = val!;
                           },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              )),
+                            borderRadius: BorderRadius.circular(10.0),
+                          )),
                           hint: Text("Area"),
                           items: [
                             DropdownMenuItem(
@@ -270,26 +278,89 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
                 const SizedBox(height: 10),
 
+                //Date of birth
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Tell us your Happiest Day!!';
+                            }
+                            else if(DateTime.now().year - year < 18)
+                              {
+                                return 'You have to be 18 or older to register.';
+                              }
+                            return null;
+                          },
+                          onTap: (){
+                            pickDate();
+                          },
+                          decoration: InputDecoration(
+                              hintText: "Date of Birth",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              fillColor: Colors.pinkAccent
+                          ),
+                          controller: dobController,
+                        ),
+                      ),
+                      // SizedBox(
+                      //   width: 5.0,
+                      // ),
+                      // Flexible(
+                      //   child: TextFormField(
+                      //     validator: (value) {
+                      //       if (value!.isEmpty) {
+                      //         return 'Tell us your Happiest Day!!';
+                      //       }
+                      //
+                      //       return null;
+                      //     },
+                      //     onTap: (){
+                      //       pickDate();
+                      //     },
+                      //     decoration: InputDecoration(
+                      //         hintText: "Last Donated",
+                      //         border: OutlineInputBorder(
+                      //           borderRadius: BorderRadius.circular(10.0),
+                      //         ),
+                      //         fillColor: Colors.pinkAccent
+                      //     ),
+                      //     controller: dobController,
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+
                 // email textfield
                 MyTextField(
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   hintText: 'Email',
                   obscureText: false,
-                  validator: (value){
-                    if(value!.isEmpty){
+                  validator: (value) {
+                    if (value!.isEmpty) {
                       return ("Please Enter Your Email");
                     }
                     //regex expression for email validation
-                    if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value))
-                    {
-                      Fluttertoast.showToast(msg: "Please Enter a Valid Email.");
+                    if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                        .hasMatch(value)) {
+                      Fluttertoast.showToast(
+                          msg: "Please Enter a Valid Email.");
                       //return ("Please Enter a Valid Email.");
                     }
                     return null;
                   },
-                  onSaved: (value){
-                    emailController.text=value!;
+                  onSaved: (value) {
+                    emailController.text = value!;
                   },
                 ),
 
@@ -300,19 +371,17 @@ class _RegisterViewState extends State<RegisterView> {
                   controller: passwordController,
                   hintText: "Password",
                   obscureText: true,
-                  validator: (value){
+                  validator: (value) {
                     RegExp regex = new RegExp(r'^.{6,}$');
-                    if(value!.isEmpty)
-                    {
+                    if (value!.isEmpty) {
                       return ("Enter Password");
                     }
-                    if(!regex.hasMatch(value))
-                    {
+                    if (!regex.hasMatch(value)) {
                       return ("Enter Minimum 6 characters)");
                     }
                   },
-                  onSaved: (value){
-                    passwordController.text=value!;
+                  onSaved: (value) {
+                    passwordController.text = value!;
                   },
                 ),
 
@@ -323,15 +392,15 @@ class _RegisterViewState extends State<RegisterView> {
                   controller: confirmPasswordController,
                   hintText: 'Confirm Password',
                   obscureText: true,
-                  validator: (value){
-                    if(passwordController.text != confirmPasswordController.text)
-                    {
+                  validator: (value) {
+                    if (passwordController.text !=
+                        confirmPasswordController.text) {
                       return "Password doesn't match";
                     }
                     return null;
                   },
-                  onSaved: (value){
-                    confirmPasswordController.text=value!;
+                  onSaved: (value) {
+                    confirmPasswordController.text = value!;
                   },
                 ),
 
@@ -345,7 +414,9 @@ class _RegisterViewState extends State<RegisterView> {
                       height: 100,
                       width: 100,
                       child: Center(
-                        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.red)),
+                        child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.red)),
                       ),
                     );
                   },
@@ -371,7 +442,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                 const SizedBox(height: 10),
 
-                // not a member? register now
+                // already have an account?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -382,8 +453,10 @@ class _RegisterViewState extends State<RegisterView> {
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => LoginView()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginView()));
                       },
                       child: const Text(
                         'Login now',
@@ -404,17 +477,21 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-  void signUp(String email, String password) async{
-    if(_formKey.currentState!.validate())
-    {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password).then((value) => {
-        postDetailsToFireStore()
-      }).catchError((e) {
+  void signUp(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {
+                postDetailsToFireStore()
+                // ignore: body_might_complete_normally_catch_error
+              })
+          .catchError((e) {
         Fluttertoast.showToast(msg: e!.message);
       });
     }
   }
-  postDetailsToFireStore() async{
+
+  postDetailsToFireStore() async {
     // call FireStore
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
@@ -431,16 +508,19 @@ class _RegisterViewState extends State<RegisterView> {
     donorModel.bloodGroup = bloodGroupController.text;
     donorModel.phoneNumber = phoneNumberController.text;
     donorModel.gender = genderController.text;
-    donorModel.dateOfBirth = "01/08/2000";
+    donorModel.dateOfBirth = dobController.text;
 
-
-    await firebaseFirestore.collection("donors").doc(user.uid).set(donorModel.toMap());
+    await firebaseFirestore
+        .collection("donors")
+        .doc(user.uid)
+        .set(donorModel.toMap());
     Fluttertoast.showToast(msg: "Account created successfully.");
 
     await _auth.currentUser?.sendEmailVerification();
 
-
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => EmailVerify()), (route) => false);
-
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => EmailVerify()),
+        (route) => false);
   }
 }

@@ -1,5 +1,5 @@
+import 'package:complete_advanced_flutter/presentation/login/is_phone_verified.dart';
 import 'package:complete_advanced_flutter/presentation/login/login.dart';
-import 'package:complete_advanced_flutter/presentation/main/main_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,7 @@ class Auth extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return MainView();
+            return IsEmailVerified();
           } else {
             return LoginView();
           }

@@ -105,7 +105,6 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // const SizedBox(height: 50),
                 // // logo
                 Container(
                   padding: EdgeInsets.all(20),

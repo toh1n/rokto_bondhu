@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../resources/color_manager.dart';
 import '../resources/strings_manager.dart';
@@ -32,16 +31,16 @@ class _MainViewState extends State<MainView> {
   var _title = AppStrings.home;
   var _currentIndex = 0;
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
+        elevation: 0.5,
         backgroundColor: Color.fromARGB(255, 185, 58, 58),
         title: Text(
           _title,
-          style: Theme.of(context).textTheme.displayMedium,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
         centerTitle: true,
       ),

@@ -43,11 +43,15 @@ ThemeData getApplicationTheme() {
 
       // Text theme
       textTheme: TextTheme(
+          // ignore: deprecated_member_use
           headline1: getSemiBoldStyle(
               color: ColorManager.darkGrey, fontSize: FontSize.s16),
+          // ignore: deprecated_member_use
           subtitle1: getMediumStyle(
               color: ColorManager.lightGrey, fontSize: FontSize.s14),
+          // ignore: deprecated_member_use
           caption: getRegularStyle(color: ColorManager.grey1),
+          // ignore: deprecated_member_use
           bodyText1: getRegularStyle(color: ColorManager.grey)),
       // input decoration theme (text form field)
 
