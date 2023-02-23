@@ -7,6 +7,7 @@ class MyTextField extends StatelessWidget {
   final validator;
   final onSaved;
   final keyboardType;
+  final initialValue;
 
   const MyTextField({
     required this.controller,
@@ -15,6 +16,7 @@ class MyTextField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.keyboardType,
+    this.initialValue,
   });
 
   @override
@@ -27,6 +29,7 @@ class MyTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         onSaved: onSaved,
+        initialValue: initialValue,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
             enabledBorder: const OutlineInputBorder(

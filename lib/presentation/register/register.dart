@@ -501,7 +501,7 @@ class _RegisterViewState extends State<RegisterView> {
 
     //send value
     donorModel.email = user!.email;
-    donorModel.uid = emailController.text;
+    donorModel.uid = user.uid;
     donorModel.displayName = displayNameController.text;
     donorModel.city = cityController.text;
     donorModel.area = areaController.text;

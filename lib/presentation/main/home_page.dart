@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -19,33 +20,73 @@ class _HomePageState extends State<HomePage> {
 
   bool onlyArea = false;
   bool onlyBloodGroup = false;
+  String bgValue = "All";
 
+  bool a = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSelectedValue();
+  }
+  Future<void> _loadSelectedValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      bgValue = prefs.getString('bgValue') ?? "All";
+      // onlyArea = prefs.getBool('onlyArea') ?? false;
+      // onlyBloodGroup = prefs.getBool('onlyBloodGroup') ?? false;
+
+    });
+  }
+  Future<void> _saveSelectedValue(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('bgValue', value);
+  }
+  Future<void> _saveonlyAreaValue(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onlyArea', value);
+  }
+  Future<void> _saveonlyBloodGroupValue(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onlyBloodGroup', value);
+  }
+
+  @override
+  void dispose() {
+    _saveSelectedValue(bgValue);
+    _saveonlyBloodGroupValue(onlyBloodGroup);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filter;
-    final specificAreaOnly = FirebaseFirestore.instance.collection('donors').where("area", isEqualTo: areaController.text).snapshots();
-    final specificBloodGroup = FirebaseFirestore.instance.collection('donors').where("bloodGroup", isEqualTo: bloodGroupController.text).snapshots();
-    final specificBloodGroupAndArea = donorRef.where('bloodGroup', isEqualTo: bloodGroupController.text).where('area', isEqualTo: areaController.text).snapshots();
-    final all = FirebaseFirestore.instance.collection('donors').where("bloodGroup", isGreaterThan: "").snapshots();
+    var filter;
+    final specificAreaOnly = FirebaseFirestore.instance
+        .collection('donors')
+        .where("area", isEqualTo: areaController.text)
+        .snapshots();
+    final specificBloodGroup = FirebaseFirestore.instance
+        .collection('donors')
+        .where("bloodGroup", isEqualTo: bloodGroupController.text)
+        .snapshots();
+    final specificBloodGroupAndArea = donorRef
+        .where('bloodGroup', isEqualTo: bloodGroupController.text)
+        .where('area', isEqualTo: areaController.text)
+        .snapshots();
+    final all = FirebaseFirestore.instance
+        .collection('donors')
+        .where("bloodGroup", isGreaterThan: "")
+        .snapshots();
 
-    if(!onlyArea && onlyBloodGroup)
-      {
-         filter = specificBloodGroup;
-      }
-    else if(onlyArea && !onlyBloodGroup)
-      {
-        filter = specificAreaOnly;
-      }
-    else if(onlyArea && onlyBloodGroup)
-      {
-        filter = specificBloodGroupAndArea;
-      }
-    else
-      {
-        filter = all;
-      }
-
+    if (!onlyArea && onlyBloodGroup) {
+      filter = specificBloodGroup;
+    } else if (onlyArea && !onlyBloodGroup) {
+      filter = specificAreaOnly;
+    } else if (onlyArea && onlyBloodGroup) {
+      filter = specificBloodGroupAndArea;
+    } else {
+      filter = all;
+    }
 
     return ListView(
       children: [
@@ -60,15 +101,17 @@ class _HomePageState extends State<HomePage> {
                       value == null ? 'Select Blood Group' : null,
                   onChanged: (String? val) {
                     setState(() {
-                      if(val == "All")
-                        {
-                          onlyBloodGroup = false;
-                        }
-                      else{
+                      bgValue = val!;
+                      if (val == "All") {
+                        onlyBloodGroup = false;
+                      } else {
                         onlyBloodGroup = true;
                       }
-                      bloodGroupController.text = val!;
+                      bloodGroupController.text = val;
+                      bgValue = val;
                     });
+                    _saveSelectedValue(val!);
+                    _saveonlyBloodGroupValue(onlyBloodGroup);
                   },
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -126,11 +169,9 @@ class _HomePageState extends State<HomePage> {
                   validator: (value) => value == null ? 'Select area' : null,
                   onChanged: (String? val) {
                     setState(() {
-                      if(val == "All")
-                      {
+                      if (val == "All") {
                         onlyArea = false;
-                      }
-                      else{
+                      } else {
                         onlyArea = true;
                       }
                       areaController.text = val!;
@@ -169,7 +210,6 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(
           child: StreamBuilder(
-
             stream: filter,
 
             // stream: filter ? donorRef.where("bloodGroup", isGreaterThan: "").snapshots()
@@ -205,9 +245,9 @@ class ShowDonors extends StatelessWidget {
 
   ShowDonors({
     required this.displayName,
-    required this.phoneNumber,
     required this.bloodGroup,
     required this.area,
+    required this.phoneNumber,
   });
 
   factory ShowDonors.fromDocument(DocumentSnapshot doc) {
@@ -241,7 +281,7 @@ class ShowDonors extends StatelessWidget {
       elevation: 1.0,
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(0),
+          borderRadius: BorderRadius.circular(0),
           color: Colors.grey[200],
         ),
         padding: EdgeInsets.only(bottom: 10.0),
@@ -332,7 +372,6 @@ class ShowDonors extends StatelessWidget {
                       ],
                     ),
                   ),
-
                 ],
               ),
               Padding(
@@ -361,7 +400,6 @@ class ShowDonors extends StatelessWidget {
                   ],
                 ),
               )
-
             ],
           ),
         ),

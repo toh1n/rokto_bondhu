@@ -5,7 +5,7 @@ import '../resources/values_manager.dart';
 import 'chat_page.dart';
 import 'home_page.dart';
 import 'notifications_page.dart';
-import 'settings_page.dart';
+import 'settings/settings_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class MainView extends StatefulWidget {
