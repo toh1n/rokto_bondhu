@@ -1,10 +1,10 @@
-import 'package:complete_advanced_flutter/presentation/forgot_password/forgot_password.dart';
-import 'package:complete_advanced_flutter/presentation/login/auth.dart';
-import 'package:complete_advanced_flutter/presentation/login/login.dart';
-import 'package:complete_advanced_flutter/presentation/main/main_view.dart';
-import 'package:complete_advanced_flutter/presentation/register/register.dart';
-import 'package:complete_advanced_flutter/presentation/resources/strings_manager.dart';
-import 'package:complete_advanced_flutter/presentation/splash/splash.dart';
+import 'package:rokto_bondhu/presentation/forgot_password/forgot_password.dart';
+import 'package:rokto_bondhu/presentation/login/auth.dart';
+import 'package:rokto_bondhu/presentation/login/login.dart';
+import 'package:rokto_bondhu/presentation/main/main_view.dart';
+import 'package:rokto_bondhu/presentation/register/register.dart';
+import 'package:rokto_bondhu/presentation/resources/strings_manager.dart';
+import 'package:rokto_bondhu/presentation/splash/splash.dart';
 import 'package:flutter/material.dart';
 
 class Routes {

@@ -1,8 +1,8 @@
-import 'package:complete_advanced_flutter/presentation/forgot_password/forgot_password.dart';
-import 'package:complete_advanced_flutter/presentation/register/register.dart';
-import 'package:complete_advanced_flutter/presentation/resources/assets_manager.dart';
-import 'package:complete_advanced_flutter/presentation/resources/color_manager.dart';
-import 'package:complete_advanced_flutter/presentation/resources/strings_manager.dart';
+import 'package:rokto_bondhu/presentation/forgot_password/forgot_password.dart';
+import 'package:rokto_bondhu/presentation/register/register.dart';
+import 'package:rokto_bondhu/presentation/resources/assets_manager.dart';
+import 'package:rokto_bondhu/presentation/resources/color_manager.dart';
+import 'package:rokto_bondhu/presentation/resources/strings_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

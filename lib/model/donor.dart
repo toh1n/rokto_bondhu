@@ -11,6 +11,8 @@ class DonorModel {
   String? city;
   String? area;
   String? email;
+  String? lastDonated;
+
 
   DonorModel(
       {this.uid,
@@ -22,7 +24,9 @@ class DonorModel {
       this.bloodGroup,
       this.phoneNumber,
       this.gender,
-      this.dateOfBirth});
+      this.dateOfBirth,
+        this.lastDonated,
+      });
 
 
   factory DonorModel.fromMap(Map<String,dynamic> doc) {
@@ -37,6 +41,8 @@ class DonorModel {
       phoneNumber: doc['phoneNumber'],
       gender: doc['gender'],
       dateOfBirth: doc['dateOfBirth'],
+      lastDonated: doc['lastDonated'],
+
     );
   }
 
@@ -53,6 +59,7 @@ class DonorModel {
       'phoneNumber': phoneNumber,
       'gender': gender,
       'dateOfBirth': dateOfBirth,
+      'lastDonated' : lastDonated,
     };
   }
 

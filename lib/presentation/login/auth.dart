@@ -1,5 +1,5 @@
-import 'package:complete_advanced_flutter/presentation/login/is_phone_verified.dart';
-import 'package:complete_advanced_flutter/presentation/login/login.dart';
+import 'package:rokto_bondhu/presentation/login/is_email_verified.dart';
+import 'package:rokto_bondhu/presentation/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

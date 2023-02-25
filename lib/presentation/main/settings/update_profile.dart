@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +28,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   final _auth = FirebaseAuth.instance.currentUser!;
 
+
   final _formKey = GlobalKey<FormState>();
   final displayNameController = TextEditingController();
   final cityController = TextEditingController();
@@ -38,6 +41,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   final bloodGroupController = TextEditingController();
   final dobController = TextEditingController();
   final birthDate = TextEditingController();
+  final lastDonated = TextEditingController();
 
   int year = 0;
 
@@ -59,11 +63,99 @@ class _UpdateProfileState extends State<UpdateProfile> {
       });
     }
   }
+  pickLastDonatedDate() async {
+    DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(DateTime.now().year-60),
+      lastDate: DateTime.now(),
+    );
+
+    if(date !=null){
+      setState(() {
+        year = date.year.toInt();
+        lastDonated.text = date.year.toString() +"-"+ date.month.toString() +"-"+date.day.toString();
+      });
+    }
+  }
+  void showAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Are you sure to delete your account?'),
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: () {
+                    try {
+                      _auth.delete();
+
+                    } catch (e) {
+                      print('Error deleting user: $e');
+                    }
+                    Navigator.pop(context);
+
+                  },
+                  child: const Text('Yes')),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'No',
+                  )),
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    final _currentUser =  FirebaseFirestore.instance.collection('donors').doc(_auth.uid).snapshots();
+    final uid = _auth.uid;
+
+    final _currentUser =  FirebaseFirestore.instance.collection('donors').doc(uid).snapshots();
+    final _deleteCurrentUser =  FirebaseFirestore.instance.collection('donors').doc(_auth.uid);
+    void showAlertDialog() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Are you sure to delete your account?'),
+              actions: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    onPressed: () {
+                      print(uid);
+                      try {
+                        _auth.delete().then((_)
+                        {
+                          _deleteCurrentUser.delete();
+                        });
+                        exit(0);
+
+                      } catch (e) {
+                        print('Error deleting user: $e');
+                      }
+                      exit(0);
+
+                    },
+                    child: const Text('Yes')),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'No',
+                    )),
+              ],
+            );
+          });
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
@@ -89,6 +181,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               genderController.text = user.gender.toString();
               birthDate.text = user.dateOfBirth.toString();
               phoneNumberController.text = user.phoneNumber.toString();
+              lastDonated.text = user.lastDonated.toString();
 
               return Center(
                 child: Form(
@@ -319,6 +412,36 @@ class _UpdateProfileState extends State<UpdateProfile> {
                                 controller: dobController,
                               ),
                             ),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Flexible(
+                              child: TextFormField(
+                                keyboardType: TextInputType.none,
+                                enableInteractiveSelection: false,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Tell us your Happiest Day!!';
+                                  }
+                                  else if(DateTime.now().year - year < 18)
+                                  {
+                                    return 'You have to be 18 or older to register.';
+                                  }
+                                  return null;
+                                },
+                                onTap: (){
+                                  pickLastDonatedDate();
+                                },
+                                decoration: InputDecoration(
+                                    hintText: "Last Donated",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    fillColor: Colors.pinkAccent
+                                ),
+                                controller: lastDonated,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -357,6 +480,32 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: () {
+
+                          showAlertDialog();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(25),
+                          margin: const EdgeInsets.symmetric(horizontal: 25),
+                          decoration: BoxDecoration(
+                            color: ColorManager.red,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Delete Account",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
                     ],
                   ),
                 ),
@@ -391,6 +540,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
       donorModel.phoneNumber = phoneNumberController.text;
       donorModel.gender = genderController.text;
       donorModel.dateOfBirth = dobController.text;
+      donorModel.lastDonated = lastDonated.text;
 
       await firebaseFirestore
           .collection("donors")

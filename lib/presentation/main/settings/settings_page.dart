@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:complete_advanced_flutter/presentation/main/settings/update_profile.dart';
+import 'package:rokto_bondhu/presentation/main/settings/update_donation_date.dart';
+import 'package:rokto_bondhu/presentation/main/settings/update_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
 
   final user = FirebaseAuth.instance.currentUser!;
+
   void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
@@ -26,23 +28,29 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          StreamBuilder(
-            stream: _currentUser,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return circularLoading();
-              }
-              List<ShowCurrentDonor> allDonors = [];
-              snapshot.data.docs.forEach((doc) {
-                allDonors.add(ShowCurrentDonor.fromDocument(doc));
-              });
-              return Container(
-                child: Column(
-                  children: allDonors,
-                ),
-              );
-            },
+          Column(
+            children: [
+              StreamBuilder(
+                stream: _currentUser,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return circularLoading();
+                  }
+                  List<ShowCurrentDonor> allDonors = [];
+                  snapshot.data.docs.forEach((doc) {
+                    allDonors.add(ShowCurrentDonor.fromDocument(doc));
+                  });
+                  return Container(
+                    child: Column(
+                      children: allDonors,
+                    ),
+                  );
+                },
+              ),
+
+            ],
           ),
+
           Column(
             children: [
               Padding(padding: EdgeInsets.all(10)),
@@ -115,6 +123,7 @@ class ShowCurrentDonor extends StatelessWidget {
   final String gender;
   final String city;
   final String dateOfBirth;
+  final String lastDonated;
 
 
   ShowCurrentDonor({
@@ -126,6 +135,8 @@ class ShowCurrentDonor extends StatelessWidget {
     required this.gender,
     required this.city,
     required this.dateOfBirth,
+    required this.lastDonated,
+
 
 
   });
@@ -140,6 +151,8 @@ class ShowCurrentDonor extends StatelessWidget {
       gender: doc['gender'],
       city: doc['city'],
       dateOfBirth: doc['dateOfBirth'],
+      lastDonated: doc['lastDonated'],
+
     );
   }
 
@@ -183,13 +196,14 @@ class ShowCurrentDonor extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(displayName),
-            Text(gender),
-            Text(dateOfBirth),
-            Text(phoneNumber),
-            Text(email),
-            Text(area),
-            Text(city),
+            Text("Name : $displayName"),
+            Text("Gender : $gender"),
+            Text("Birth Date : $dateOfBirth"),
+            Text("Phone : $phoneNumber"),
+            Text("Email : $email"),
+            Text("Area : $area"),
+            Text("City : $city"),
+            Text("Last Donated : $lastDonated")
           ],
         )
       ],

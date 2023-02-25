@@ -1,7 +1,7 @@
-import 'package:complete_advanced_flutter/presentation/resources/color_manager.dart';
-import 'package:complete_advanced_flutter/presentation/resources/font_manager.dart';
-import 'package:complete_advanced_flutter/presentation/resources/styles_manager.dart';
-import 'package:complete_advanced_flutter/presentation/resources/values_manager.dart';
+import 'package:rokto_bondhu/presentation/resources/color_manager.dart';
+import 'package:rokto_bondhu/presentation/resources/font_manager.dart';
+import 'package:rokto_bondhu/presentation/resources/styles_manager.dart';
+import 'package:rokto_bondhu/presentation/resources/values_manager.dart';
 import 'package:flutter/material.dart';
 
 ThemeData getApplicationTheme() {

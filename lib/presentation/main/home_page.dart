@@ -21,6 +21,10 @@ class _HomePageState extends State<HomePage> {
   bool onlyArea = false;
   bool onlyBloodGroup = false;
   String bgValue = "All";
+  List<String> _items1 =  ['All','Ambarkhana','Bondor','Sahi Eidgah','Tilagor','South Surma','Kamal Bazar'];
+  List<String> _items2 =  ['All','A+','A-','B+','B-','O+','O-','AB+','AB-'];
+
+
 
   bool a = false;
 
@@ -88,6 +92,7 @@ class _HomePageState extends State<HomePage> {
       filter = all;
     }
 
+
     return ListView(
       children: [
         Padding(
@@ -121,44 +126,12 @@ class _HomePageState extends State<HomePage> {
                     setState(() {});
                   },
                   hint: Text("Blood Group : All"),
-                  items: [
-                    DropdownMenuItem(
-                      child: Text("All"),
-                      value: "All",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("A+"),
-                      value: "A+",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("B+"),
-                      value: "B+",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("O+"),
-                      value: "O+",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("AB+"),
-                      value: "AB+",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("A-"),
-                      value: "A-",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("B-"),
-                      value: "B-",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("O-"),
-                      value: "O-",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("AB-"),
-                      value: "AB-",
-                    ),
-                  ],
+                  items: _items2.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
                 ),
               ),
               SizedBox(
@@ -185,24 +158,12 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10.0),
                   )),
                   hint: Text("Area : All"),
-                  items: [
-                    DropdownMenuItem(
-                      child: Text("All"),
-                      value: "All",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("Bondor"),
-                      value: "Bondor",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("South Surma"),
-                      value: "South Surma",
-                    ),
-                    DropdownMenuItem(
-                      child: Text("Other"),
-                      value: "Other",
-                    ),
-                  ],
+                  items: _items1.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
                 ),
               ),
             ],
@@ -242,12 +203,15 @@ class ShowDonors extends StatelessWidget {
   final String bloodGroup;
   final String area;
   final String phoneNumber;
+  final String lastDonated;
+
 
   ShowDonors({
     required this.displayName,
     required this.bloodGroup,
     required this.area,
     required this.phoneNumber,
+    required this.lastDonated,
   });
 
   factory ShowDonors.fromDocument(DocumentSnapshot doc) {
@@ -256,6 +220,8 @@ class ShowDonors extends StatelessWidget {
       bloodGroup: doc['bloodGroup'],
       phoneNumber: doc['phoneNumber'],
       area: doc['area'],
+      lastDonated: doc['lastDonated'],
+
     );
   }
 
@@ -282,7 +248,7 @@ class ShowDonors extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(0),
-          color: Colors.grey[200],
+          color: Colors.grey[100],
         ),
         padding: EdgeInsets.only(bottom: 10.0),
         child: Container(
@@ -361,6 +327,36 @@ class ShowDonors extends StatelessWidget {
                                         fontFamily: "Gotham",
                                         fontSize: 18.0),
                                   ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  
+                                  Text(
+                                    "Last Donated : ",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Gotham",
+                                        fontSize: 14.0),
+                                  ),
+                                  Text("$lastDonated",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontFamily: "Gotham",
+                                        fontSize: 14.0),
+                                  )
                                 ],
                               ),
                               SizedBox(

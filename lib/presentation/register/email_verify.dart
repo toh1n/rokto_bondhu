@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../resources/color_manager.dart';
@@ -12,6 +13,12 @@ class EmailVerify extends StatefulWidget {
 }
 
 class _EmailVerifyState extends State<EmailVerify> {
+  final user = FirebaseAuth.instance.currentUser!;
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+    exit(0);
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +36,7 @@ class _EmailVerifyState extends State<EmailVerify> {
           ),
           GestureDetector(
             onTap: () {
-              exit(0);
+              signUserOut();
             },
             child: Container(
               padding: const EdgeInsets.all(25),
