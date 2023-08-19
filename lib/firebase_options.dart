@@ -45,7 +45,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCpo7Lx-NKTWrVMTSzomNDJoVvh8adtyRs',
-    appId: '1:907316484236:web:bacbf4ef6143bf72af83a9',
+    appId: '1:907316484236:web:c150ee777dc4f969af83a9',
     messagingSenderId: '907316484236',
     projectId: 'roktobondhu-b1c11',
     authDomain: 'roktobondhu-b1c11.firebaseapp.com',
@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyApNPIR7R69QGnfjcfGhInaNk7nsuJE0IU',
-    appId: '1:907316484236:android:af44cd55edf7606baf83a9',
+    appId: '1:907316484236:android:d61e78e9dcf2f875af83a9',
     messagingSenderId: '907316484236',
     projectId: 'roktobondhu-b1c11',
     storageBucket: 'roktobondhu-b1c11.appspot.com',
@@ -62,21 +62,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAA1dZRHtDd8BPEQCpjf0g9GY-B_FKr1NU',
-    appId: '1:907316484236:ios:1a701d50e60a5066af83a9',
+    appId: '1:907316484236:ios:b123aebf6ed37bb7af83a9',
     messagingSenderId: '907316484236',
     projectId: 'roktobondhu-b1c11',
     storageBucket: 'roktobondhu-b1c11.appspot.com',
-    iosClientId: '907316484236-13h1rrh1l4roqul6hc79bec1darrk2lo.apps.googleusercontent.com',
-    iosBundleId: 'com.example.roktoBondhu',
+    androidClientId: '907316484236-rs8aq3t5plnstd3d8hkcve9ul5d1vnh7.apps.googleusercontent.com',
+    iosClientId: '907316484236-a1qpnqn92120n10nded45tkg8he3e1q6.apps.googleusercontent.com',
+    iosBundleId: 'com.example.bloodDonationApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAA1dZRHtDd8BPEQCpjf0g9GY-B_FKr1NU',
-    appId: '1:907316484236:ios:1a701d50e60a5066af83a9',
+    appId: '1:907316484236:ios:04f997805bbb3f1baf83a9',
     messagingSenderId: '907316484236',
     projectId: 'roktobondhu-b1c11',
     storageBucket: 'roktobondhu-b1c11.appspot.com',
-    iosClientId: '907316484236-13h1rrh1l4roqul6hc79bec1darrk2lo.apps.googleusercontent.com',
-    iosBundleId: 'com.example.roktoBondhu',
+    androidClientId: '907316484236-rs8aq3t5plnstd3d8hkcve9ul5d1vnh7.apps.googleusercontent.com',
+    iosClientId: '907316484236-4fovnf2oc0kb50npdh6iifsmrcq1ddrf.apps.googleusercontent.com',
+    iosBundleId: 'com.example.bloodDonationApp.RunnerTests',
   );
 }
