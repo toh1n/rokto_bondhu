@@ -1,20 +1,19 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rokto_bondhu/data/models/donor_model.dart';
+import 'package:rokto_bondhu/ui/utils/color_manager.dart';
 import 'package:rokto_bondhu/ui/widgets/my_text_field.dart';
 
-
-class UpdateProfileScreen extends StatefulWidget {
-  const UpdateProfileScreen({Key? key}) : super(key: key);
+class UpdateProfile extends StatefulWidget {
+  const UpdateProfile({Key? key}) : super(key: key);
 
   @override
-  State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
+  State<UpdateProfile> createState() => _UpdateProfileState();
 }
 
-class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+class _UpdateProfileState extends State<UpdateProfile> {
 
   final _auth = FirebaseAuth.instance.currentUser!;
 
@@ -32,8 +31,79 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final dobController = TextEditingController();
   final birthDate = TextEditingController();
   final lastDonated = TextEditingController();
+  final isAvailable = TextEditingController();
 
   int year = 0;
+
+  List<String> _items2 =  ['A+','A-','B+','B-','O+','O-','AB+','AB-'];
+  List<String> _items1 = [''];
+
+  String? selectedCity;
+  String? selectedArea;
+  List<String> areas = [];
+
+  final Map<String, List<String>> cityToAreas = {
+    'Sylhet': [
+      'Sylhet City',
+      'Maulvibazar',
+      'Habiganj',
+      'Sunamganj',
+      'Sreemangal',
+      'Kulaura',
+      'Beanibazar',
+      'Barlekha',
+      'Zakiganj',
+      'Chhatak',
+      'Balagonj',
+      'Osmaninogor',
+      'Joggonathpur',
+      'Bisawanth',],
+    'Dhaka': [
+      'Dhaka City',
+      'Ghorashal',
+      'Monohardi',
+      'Shibpur',
+      'Raipura',
+      'Madhabdi',
+      'Mirzapur',
+      'Dhanbari',
+      'Madhupur',
+      'Gopalpur',
+      'Ghatail',
+      'Kalihati',
+      'Sakhipur',
+      'Bhuapur',
+      'Elenga',],
+  };
+
+  void _onCityChanged(String? newValue) {
+    setState(() {
+      selectedCity = newValue;
+      areas = cityToAreas[newValue!]!;
+      selectedArea = areas[0];
+      cityController.text = selectedCity!;
+      areaController.text = selectedArea!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCity = cityToAreas.keys.first;
+    areas = cityToAreas[selectedCity!]!;
+    selectedArea = areas[0];
+    cityController.text = selectedCity!;
+    areaController.text = selectedArea!;
+  }
+
+  @override
+  void dispose() {
+    cityController.dispose();
+    areaController.dispose();
+    super.dispose();
+  }
+
+
 
 
 
@@ -49,7 +119,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if(date !=null){
       setState(() {
         year = date.year.toInt();
-        dobController.text = "${date.year}-${date.month}-${date.day}";
+        dobController.text = date.year.toString() +"-"+ date.month.toString() +"-"+date.day.toString();
       });
     }
   }
@@ -63,8 +133,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     if(date !=null){
       setState(() {
-        year = date.year.toInt();
-        lastDonated.text = "${date.year}-${date.month}-${date.day}";
+        lastDonated.text = date.year.toString() +"-"+ date.month.toString() +"-"+date.day.toString();
       });
     }
   }
@@ -82,7 +151,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       _auth.delete();
 
                     } catch (e) {
-                      Fluttertoast.showToast(msg: e.toString());
+                      print('Error deleting user: $e');
                     }
                     Navigator.pop(context);
 
@@ -106,51 +175,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     final uid = _auth.uid;
 
-    final currentUser =  FirebaseFirestore.instance.collection('donors').doc(uid).snapshots();
-    final deleteCurrentUser =  FirebaseFirestore.instance.collection('donors').doc(_auth.uid);
-    void showAlertDialog() {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Are you sure to delete your account?'),
-              actions: [
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    onPressed: () {
-
-                      try {
-                        _auth.delete().then((_)
-                        {
-                          deleteCurrentUser.delete();
-                        });
-                        exit(0);
-
-                      } catch (e) {
-                        Fluttertoast.showToast(msg: e.toString());
-                      }
-                      exit(0);
-
-                    },
-                    child: const Text('Yes')),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'No',
-                    )),
-              ],
-            );
-          });
-    }
+    final _currentUser =  FirebaseFirestore.instance.collection('donors').doc(uid).snapshots();
 
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         elevation: 0.5,
-        backgroundColor: const Color.fromARGB(255, 185, 58, 58),
+        backgroundColor: Color.fromARGB(255, 185, 58, 58),
         title: Text(
           "Update Profile",
           style: Theme.of(context).textTheme.headlineMedium,
@@ -160,18 +191,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       ),
       body: SingleChildScrollView(
         child: StreamBuilder<DocumentSnapshot>(
-          stream: currentUser,
+          stream: _currentUser,
           builder: (context,AsyncSnapshot snapshot){
             if (snapshot.hasData && snapshot.data != null) {
               DonorModel user = DonorModel.fromMap(snapshot.data!.data());
-              displayNameController.text = user.displayName.toString();
-              cityController.text = user.city.toString();
-              areaController.text = user.area.toString();
-              bloodGroupController.text = user.bloodGroup.toString();
-              genderController.text = user.gender.toString();
-              birthDate.text = user.dateOfBirth.toString();
-              phoneNumberController.text = user.phoneNumber.toString();
-              lastDonated.text = user.lastDonated.toString();
+              // displayNameController.text = user.displayName.toString();
+              // cityController.text = user.city.toString();
+              // areaController.text = user.area.toString();
+              // bloodGroupController.text = user.bloodGroup.toString();
+              // genderController.text = user.gender.toString();
+              // birthDate.text = user.dateOfBirth.toString();
+              // phoneNumberController.text = user.phoneNumber.toString();
+              // lastDonated.text = user.lastDonated.toString();
+              isAvailable.text = user.isAvailable.toString();
 
               return Center(
                 child: Form(
@@ -207,18 +239,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         hintText: 'Phone Number',
                         obscureText: false,
                         keyboardType: TextInputType.number,
-                        // validator: (value){
-                        //
-                        //   RegExp regex = new RegExp(r"/^(?:(?:\+|00)88|01)?\d{11}$/");
-                        //   if(value!.isEmpty)
-                        //   {
-                        //     return ("Please enter your phone number.");
-                        //   }
-                        //   if(!regex.hasMatch(value))
-                        //   {
-                        //     return ("Please enter a valid phone number.");
-                        //   }
-                        // },
+                        validator: (value){
+
+                          RegExp regex = new RegExp(r"^(?:\+88|88)?(01[3-9]\d{8})$");
+                          if(value!.isEmpty)
+                          {
+                            return ("Please enter your phone number.");
+                          }
+                          if(!regex.hasMatch(value))
+                          {
+                            return ("Please enter a valid phone number.");
+                          }
+                        },
                       ),
                       const SizedBox(height: 10),
 
@@ -238,48 +270,49 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     )),
-                                hint: Text(bloodGroupController.text),
-                                items: const [
+                                hint: Text("Blood Group"),
+                                items: [
                                   DropdownMenuItem(
-                                    value: "A+",
                                     child: Text("A+"),
+                                    value: "A+",
                                   ),
                                   DropdownMenuItem(
-                                    value: "B+",
                                     child: Text("B+"),
+                                    value: "B+",
                                   ),
                                   DropdownMenuItem(
-                                    value: "O+",
                                     child: Text("O+"),
+                                    value: "O+",
                                   ),
                                   DropdownMenuItem(
-                                    value: "AB+",
                                     child: Text("AB+"),
+                                    value: "AB+",
                                   ),
                                   DropdownMenuItem(
-                                    value: "A-",
                                     child: Text("A-"),
+                                    value: "A-",
                                   ),
                                   DropdownMenuItem(
-                                    value: "B-",
                                     child: Text("B-"),
+                                    value: "B-",
                                   ),
                                   DropdownMenuItem(
-                                    value: "O-",
                                     child: Text("O-"),
+                                    value: "O-",
                                   ),
                                   DropdownMenuItem(
-                                    value: "AB-",
                                     child: Text("AB-"),
+                                    value: "AB-",
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               width: 5.0,
                             ),
                             Flexible(
                               child: DropdownButtonFormField(
+
                                 validator: (value) =>
                                 value == null ? 'Select Gender' : null,
                                 onChanged: (String? val) {
@@ -289,19 +322,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     )),
-                                hint: Text(genderController.text),
-                                items: const [
+                                hint: Text("Gender"),
+                                items: [
                                   DropdownMenuItem(
-                                    value: "Male",
                                     child: Text("Male"),
+                                    value: "Male",
                                   ),
                                   DropdownMenuItem(
-                                    value: "Female",
                                     child: Text("Female"),
+                                    value: "Female",
                                   ),
                                   DropdownMenuItem(
-                                    value: "Other",
                                     child: Text("Other"),
+                                    value: "Other",
                                   ),
                                 ],
                               ),
@@ -317,54 +350,51 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         child: Row(
                           children: [
                             Flexible(
+
                               child: DropdownButtonFormField(
+                                value: selectedCity,
                                 validator: (value) =>
                                 value == null ? 'Select City' : null,
-                                onChanged: (String? val) {
-                                  cityController.text = val!;
-                                },
+                                onChanged: _onCityChanged,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     )),
-                                hint: Text(cityController.text),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "Sylhet",
-                                    child: Text("Sylhet"),
-                                  ),
-                                ],
+                                hint: Text("City"),
+                                items: cityToAreas.keys
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
                               ),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               width: 5.0,
                             ),
                             Flexible(
                               child: DropdownButtonFormField(
+                                value: selectedArea,
                                 validator: (value) =>
                                 value == null ? 'Select area' : null,
-                                onChanged: (String? val) {
-                                  areaController.text = val!;
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedArea = newValue!;
+                                    areaController.text = selectedArea!;
+                                  });
                                 },
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     )),
-                                hint: Text(areaController.text),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "Bondor",
-                                    child: Text("Bondor"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "South Surma",
-                                    child: Text("South Surma"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Other",
-                                    child: Text("Other"),
-                                  ),
-                                ],
+                                hint: Text("Area"),
+                                items:  areas.map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],
@@ -377,34 +407,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Row(
                           children: [
-                            Flexible(
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Tell us your Happiest Day!!';
-                                  }
-                                  else if(DateTime.now().year - year < 18)
-                                  {
-                                    return 'You have to be 18 or older to register.';
-                                  }
-                                  return null;
-                                },
-                                onTap: (){
-                                  pickDate();
-                                },
-                                decoration: InputDecoration(
-                                    hintText: birthDate.text,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    fillColor: Colors.pinkAccent
-                                ),
-                                controller: dobController,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 5.0,
-                            ),
                             Flexible(
                               child: TextFormField(
                                 keyboardType: TextInputType.none,
@@ -420,10 +422,36 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   return null;
                                 },
                                 onTap: (){
+                                  pickDate();
+                                },
+                                decoration: InputDecoration(
+                                    hintText: "Birth Date",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    fillColor: Colors.pinkAccent
+                                ),
+                                controller: dobController,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Flexible(
+                              child: TextFormField(
+                                keyboardType: TextInputType.none,
+                                enableInteractiveSelection: false,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Tell us your Happiest Day!!';
+                                  }
+                                  return null;
+                                },
+                                onTap: (){
                                   pickLastDonatedDate();
                                 },
                                 decoration: InputDecoration(
-                                    hintText: "Last Donated",
+                                    hintText: "Last Donation date",
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
@@ -454,7 +482,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           padding: const EdgeInsets.all(25),
                           margin: const EdgeInsets.symmetric(horizontal: 25),
                           decoration: BoxDecoration(
-                            color: Colors.redAccent,
+                            color: ColorManager.red,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Center(
@@ -469,31 +497,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () {
 
-                          showAlertDialog();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(25),
-                          margin: const EdgeInsets.symmetric(horizontal: 25),
-                          decoration: BoxDecoration(
-                            color: Colors.redAccent,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Delete Account",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 20),
 
                     ],
@@ -501,8 +505,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ),
               );
             } else {
-              return const CircularProgressIndicator();
-            }
+              return CircularProgressIndicator();
+            };
           },
         ),
       ),
@@ -531,6 +535,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       donorModel.gender = genderController.text;
       donorModel.dateOfBirth = dobController.text;
       donorModel.lastDonated = lastDonated.text;
+      donorModel.isAvailable = isAvailable.text;
+
 
       await firebaseFirestore
           .collection("donors")

@@ -1,7 +1,7 @@
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:rokto_bondhu/ui/screens/home_screen.dart';
-import 'package:rokto_bondhu/ui/screens/settings_screen.dart';
+import 'package:rokto_bondhu/ui/screens/profile_screen.dart';
 import 'package:rokto_bondhu/ui/utils/color_manager.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class BaseScreen extends StatefulWidget {
 class _BaseScreenState extends State<BaseScreen> {
   List<Widget> pages = [
     const HomeScreen(),
-    const SettingsScreen(),
+    const ProfileScreen(),
   ];
   List<String> titles = [
     "Home",
