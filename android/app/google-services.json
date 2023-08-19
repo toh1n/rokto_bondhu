@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "907316484236",
+    "project_id": "roktobondhu-b1c11",
+    "storage_bucket": "roktobondhu-b1c11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907316484236:android:d61e78e9dcf2f875af83a9",
+        "android_client_info": {
+          "package_name": "com.example.blood_donation_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907316484236-t5u68qci95mcicr0joofl70ithmlokju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApNPIR7R69QGnfjcfGhInaNk7nsuJE0IU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "907316484236-t5u68qci95mcicr0joofl70ithmlokju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "907316484236-13h1rrh1l4roqul6hc79bec1darrk2lo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.roktoBondhu"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907316484236:android:af44cd55edf7606baf83a9",
+        "android_client_info": {
+          "package_name": "com.example.rokto_bondhu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907316484236-rs8aq3t5plnstd3d8hkcve9ul5d1vnh7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rokto_bondhu",
+            "certificate_hash": "7a9506309c1ee31280f5ca7956fcf42413c6ee39"
+          }
+        },
+        {
+          "client_id": "907316484236-t5u68qci95mcicr0joofl70ithmlokju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApNPIR7R69QGnfjcfGhInaNk7nsuJE0IU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "907316484236-t5u68qci95mcicr0joofl70ithmlokju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "907316484236-13h1rrh1l4roqul6hc79bec1darrk2lo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.roktoBondhu"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
