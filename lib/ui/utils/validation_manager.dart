@@ -57,6 +57,14 @@ class Validator {
 
     return null;
   }
+  static String? validateNull(String? value){
+    if(value!.isEmpty){
+      return "Can't be Empty";
+    } else if(value == null){
+      return "Can't be Empty";
+    }
+    return null;
+  }
 
 
 }

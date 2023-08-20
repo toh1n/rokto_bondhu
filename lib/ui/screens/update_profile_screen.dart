@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rokto_bondhu/data/models/donor_model.dart';
 import 'package:rokto_bondhu/ui/utils/color_manager.dart';
+import 'package:rokto_bondhu/ui/utils/validation_manager.dart';
+import 'package:rokto_bondhu/ui/widgets/my_button.dart';
 import 'package:rokto_bondhu/ui/widgets/my_text_field.dart';
 
 class UpdateProfile extends StatefulWidget {
@@ -16,8 +18,6 @@ class UpdateProfile extends StatefulWidget {
 class _UpdateProfileState extends State<UpdateProfile> {
 
   final _auth = FirebaseAuth.instance.currentUser!;
-
-
   final _formKey = GlobalKey<FormState>();
   final displayNameController = TextEditingController();
   final cityController = TextEditingController();
@@ -32,15 +32,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
   final birthDate = TextEditingController();
   final lastDonated = TextEditingController();
   final isAvailable = TextEditingController();
-
   int year = 0;
-
-  List<String> _items2 =  ['A+','A-','B+','B-','O+','O-','AB+','AB-'];
-  List<String> _items1 = [''];
 
   String? selectedCity;
   String? selectedArea;
   List<String> areas = [];
+  bool inProgress = false;
 
   final Map<String, List<String>> cityToAreas = {
     'Sylhet': [
@@ -95,18 +92,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
     cityController.text = selectedCity!;
     areaController.text = selectedArea!;
   }
-
-  @override
-  void dispose() {
-    cityController.dispose();
-    areaController.dispose();
-    super.dispose();
-  }
-
-
-
-
-
 
   pickDate() async {
     DateTime? date = await showDatePicker(
@@ -178,13 +163,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
     final _currentUser =  FirebaseFirestore.instance.collection('donors').doc(uid).snapshots();
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: ColorManager.backgroundColor,
       appBar: AppBar(
         elevation: 0.5,
-        backgroundColor: Color.fromARGB(255, 185, 58, 58),
+        backgroundColor: ColorManager.red,
         title: Text(
           "Update Profile",
-          style: Theme.of(context).textTheme.headlineMedium,
         ),
         centerTitle: true,
 
@@ -195,14 +179,14 @@ class _UpdateProfileState extends State<UpdateProfile> {
           builder: (context,AsyncSnapshot snapshot){
             if (snapshot.hasData && snapshot.data != null) {
               DonorModel user = DonorModel.fromMap(snapshot.data!.data());
-              // displayNameController.text = user.displayName.toString();
-              // cityController.text = user.city.toString();
-              // areaController.text = user.area.toString();
-              // bloodGroupController.text = user.bloodGroup.toString();
-              // genderController.text = user.gender.toString();
-              // birthDate.text = user.dateOfBirth.toString();
-              // phoneNumberController.text = user.phoneNumber.toString();
-              // lastDonated.text = user.lastDonated.toString();
+              displayNameController.text = user.displayName.toString();
+              cityController.text = user.city.toString();
+              areaController.text = user.area.toString();
+              bloodGroupController.text = user.bloodGroup.toString();
+              genderController.text = user.gender.toString();
+              birthDate.text = user.dateOfBirth.toString();
+              phoneNumberController.text = user.phoneNumber.toString();
+              lastDonated.text = user.lastDonated.toString();
               isAvailable.text = user.isAvailable.toString();
 
               return Center(
@@ -213,24 +197,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     children: [
                       const SizedBox(height: 30),
 
-                      //displayName
                       MyTextField(
-                        validator: (value) {
-                          RegExp regex = RegExp(r'^.{3,}$');
-                          if (value!.isEmpty) {
-                            return ("Name can not be empty");
-                          }
-                          if (!regex.hasMatch(value)) {
-                            return ("Please Enter a valid name.");
-                          }
-                        },
+                        validator: (value) => Validator.validateName(value),
                         controller: displayNameController,
                         obscureText: false,
                         hintText: 'Name',
                         keyboardType: TextInputType.name,
-                        onSaved: (value) {
-                          displayNameController.text = value!;
-                        },
                       ),
 
                       const SizedBox(height: 10),
@@ -239,18 +211,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         hintText: 'Phone Number',
                         obscureText: false,
                         keyboardType: TextInputType.number,
-                        validator: (value){
-
-                          RegExp regex = new RegExp(r"^(?:\+88|88)?(01[3-9]\d{8})$");
-                          if(value!.isEmpty)
-                          {
-                            return ("Please enter your phone number.");
-                          }
-                          if(!regex.hasMatch(value))
-                          {
-                            return ("Please enter a valid phone number.");
-                          }
-                        },
+                        validator: (value) => Validator.validateBangladeshiPhoneNumber(value),
                       ),
                       const SizedBox(height: 10),
 
@@ -313,8 +274,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             Flexible(
                               child: DropdownButtonFormField(
 
-                                validator: (value) =>
-                                value == null ? 'Select Gender' : null,
+                                validator: (value) => Validator.validateNull(value),
                                 onChanged: (String? val) {
                                   genderController.text = val!;
                                 },
@@ -344,7 +304,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       ),
                       const SizedBox(height: 10),
 
-                      //City and Area
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Row(
@@ -402,7 +361,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       ),
                       const SizedBox(height: 10),
 
-                      //Date of birth
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Row(
@@ -464,39 +422,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Register button
-                      GestureDetector(
-                        onTap: () {
-                          postDetailsToFireStore();
-                          const SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                  valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.red)),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(25),
-                          margin: const EdgeInsets.symmetric(horizontal: 25),
-                          decoration: BoxDecoration(
-                            color: ColorManager.red,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Update Profile",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+
+                      MyButton(visible: inProgress, voidCallback: postDetailsToFireStore, text: "Update Profile"),
 
                       const SizedBox(height: 20),
 
@@ -516,15 +443,14 @@ class _UpdateProfileState extends State<UpdateProfile> {
   postDetailsToFireStore() async {
 
     if (_formKey.currentState!.validate()) {
+      inProgress = true;
+      setState(() {});
 
-      // call FireStore
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth;
 
-      // call donor model
       DonorModel donorModel = DonorModel();
 
-      //send value
       donorModel.email = user.email;
       donorModel.uid = user.uid;
       donorModel.displayName = displayNameController.text;
@@ -537,12 +463,22 @@ class _UpdateProfileState extends State<UpdateProfile> {
       donorModel.lastDonated = lastDonated.text;
       donorModel.isAvailable = isAvailable.text;
 
+      try{
+        await firebaseFirestore
+            .collection("donors")
+            .doc(user.uid)
+            .set(donorModel.toMap());
+        inProgress = false;
+        setState(() {});
+        Fluttertoast.showToast(msg: "Profile Updated Successfully");
+      } catch (e){
+        inProgress = false;
+        setState(() {});
+        Fluttertoast.showToast(msg: e.toString());
+      }
 
-      await firebaseFirestore
-          .collection("donors")
-          .doc(user.uid)
-          .set(donorModel.toMap());
-      Fluttertoast.showToast(msg: "Profile Updated Successfully");
+
+
 
     }
 
